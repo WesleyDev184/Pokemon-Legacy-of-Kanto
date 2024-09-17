@@ -1,22 +1,43 @@
 #include <iostream>
-#include <fstream>
-#include <string>
+#include <memory>
+#include "src/move/move.h"
+#include "src/pokemon/pokemon.h"
+#include "src/player/player.h"
+
+using namespace std;
 
 int main()
 {
-    std::ifstream arquivo("mapa.txt"); // Substitua "nome_do_arquivo.txt" pelo nome do seu arquivo
-    if (!arquivo.is_open())
+    shared_ptr<vector<Move>> moves(new vector<Move>());
+    shared_ptr<vector<Pokemon>> pokemons(new vector<Pokemon>());
+    shared_ptr<vector<Player>> players(new vector<Player>());
+
+    // string filePath = "data/player.txt";
+
+    // loadPlayersFromFile(filePath, players.get());
+
+    // for (const auto &player : *players)
+    // {
+    //     player.print();
+    // }
+
+    string filePath = "data/moves.txt";
+
+    loadMovesFromFile(filePath, moves.get());
+
+    for (const auto &move : *moves)
     {
-        std::cerr << "Erro ao abrir o arquivo!" << std::endl;
-        return 1;
+        move.print();
     }
 
-    std::string linha;
-    while (std::getline(arquivo, linha))
-    {
-        std::cout << linha << std::endl;
-    }
+    // string filePath = "data/pokemons.txt";
 
-    arquivo.close();
+    // loadPokemonFromFile(filePath, pokemons.get());
+
+    // for (const auto &pokemon : *pokemons)
+    // {
+    //     pokemon.print();
+    // }
+
     return 0;
 }

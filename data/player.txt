@@ -1,0 +1,4 @@
+Nome,Score,Vitórias,Derrotas
+John Doe,1500,10,5
+Jane Smith,1800,15,3
+Jack Black,1200,7,8
