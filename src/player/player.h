@@ -28,11 +28,16 @@ public:
   vector<Pokemon> getPokemons() const;
 
   // Setters
+  void setScore(const int score);
+  void setVictories(const int victories);
+  void setDefeats(const int defeats);
   void setPokemons(const vector<Pokemon> &pokemons);
 
   void print() const;
 };
 
 void loadPlayersFromFile(const string &filePath, vector<Player> *players);
+
+void savePlayersToFile(const string &filePath, const vector<Player> &players);
 
 #endif

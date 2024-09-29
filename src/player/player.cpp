@@ -36,7 +36,27 @@ void Player::print() const
        << endl;
 }
 
+vector<Pokemon> Player::getPokemons() const
+{
+  return this->pokemons;
+}
+
 // Setters
+void Player::setScore(int score)
+{
+  this->score = score;
+}
+
+void Player::setVictories(int victories)
+{
+  this->victories = victories;
+}
+
+void Player::setDefeats(int defeats)
+{
+  this->defeats = defeats;
+}
+
 void Player::setPokemons(const vector<Pokemon> &pokemons)
 {
   this->pokemons = pokemons;
@@ -72,6 +92,29 @@ void loadPlayersFromFile(const string &filePath, vector<Player> *players)
 
     // Criar o objeto Player e adicionar ao vetor
     players->emplace_back(name, score, victories, defeats);
+  }
+
+  file.close();
+}
+
+void savePlayersToFile(const string &filePath, const vector<Player> &players)
+{
+  ofstream file(filePath);
+
+  if (!file.is_open())
+  {
+    cerr << "Error: Could not open file " << filePath << endl;
+    return;
+  }
+
+  file << "Name,Score,Victories,Defeats" << endl;
+
+  for (const auto &player : players)
+  {
+    file << player.getName() << ","
+         << player.getScore() << ","
+         << player.getVictories() << ","
+         << player.getDefeats() << endl;
   }
 
   file.close();

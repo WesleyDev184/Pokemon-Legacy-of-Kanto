@@ -22,8 +22,14 @@ HEADER := $(shell find $(CLASSES_FOLDER) -type f -name '*.h')
 # Adiciona o main.cpp ao SRC
 MAIN_SRC = main.cpp
 
+# Adiciona o main.h ao HEADER
+MAIN_HEADER = main.h
+
 # Combina o main com os arquivos da pasta src
 ALL_SRC = $(MAIN_SRC) $(SRC)
+
+# Adiciona o main.h ao HEADER
+ALL_HEADER = $(MAIN_HEADER) $(HEADER)
 
 # Gera a lista de arquivos objeto, mantendo a estrutura de pastas
 OBJ = $(patsubst %.cpp, $(OUTPUT_FOLDER)/%.o, $(ALL_SRC))
@@ -40,7 +46,7 @@ $(OUTPUT_FOLDER)/$(TARGET): $(OBJ)
 	$(CXX) $(CXXFLAGS) -o $@ $(OBJ)
 
 # Regras para compilar arquivos .cpp (exceto main.cpp) em .o dentro da pasta de saída
-$(OUTPUT_FOLDER)/%.o: %.cpp $(HEADER)
+$(OUTPUT_FOLDER)/%.o: %.cpp $(ALL_HEADER)
 	@mkdir -p $(dir $@)  # Garante que os diretórios sejam criados
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
