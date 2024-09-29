@@ -5,13 +5,15 @@
 #include <sstream>
 #include <unordered_map>
 
+using namespace std;
+
 class PokemonTypeChart
 {
 private:
-    std::vector<std::vector<double>> typeChart;
-    std::unordered_map<std::string, int> typeIndex;
+    vector<vector<double>> typeChart;
+    unordered_map<string, int> typeIndex;
 
-    void loadTypes(const std::vector<std::string> &types)
+    void loadTypes(const vector<string> &types)
     {
         for (int i = 0; i < types.size(); ++i)
         {
@@ -20,29 +22,29 @@ private:
     }
 
 public:
-    void loadFromCSV(const std::string &filename)
+    void loadFromCSV(const string &filename)
     {
-        std::ifstream file(filename);
-        std::string line, cell;
+        ifstream file(filename);
+        string line, cell;
         bool headerProcessed = false;
 
         if (!file.is_open())
         {
-            std::cerr << "Erro ao abrir o arquivo " << filename << std::endl;
+            cerr << "Erro ao abrir o arquivo " << filename << endl;
             return;
         }
 
-        while (std::getline(file, line))
+        while (getline(file, line))
         {
-            std::stringstream lineStream(line);
-            std::vector<double> row;
+            stringstream lineStream(line);
+            vector<double> row;
 
             if (!headerProcessed)
             {
                 // Process header
-                std::vector<std::string> headers;
-                std::getline(lineStream, cell, ','); // Skip "attack" header
-                while (std::getline(lineStream, cell, ','))
+                vector<string> headers;
+                getline(lineStream, cell, ','); // Skip "attack" header
+                while (getline(lineStream, cell, ','))
                 {
                     headers.push_back(cell);
                 }
@@ -52,17 +54,17 @@ public:
             else
             {
                 // Process data rows
-                std::getline(lineStream, cell, ','); // Skip row type (e.g., Normal, Fogo)
-                while (std::getline(lineStream, cell, ','))
+                getline(lineStream, cell, ','); // Skip row type (e.g., Normal, Fogo)
+                while (getline(lineStream, cell, ','))
                 {
-                    row.push_back(std::stod(cell));
+                    row.push_back(stod(cell));
                 }
                 typeChart.push_back(row);
             }
         }
     }
 
-    double getDamageMultiplier(const std::string &attackType, const std::string &defenseType) const
+    double getDamageMultiplier(const string &attackType, const string &defenseType) const
     {
         if (typeIndex.find(attackType) != typeIndex.end() && typeIndex.find(defenseType) != typeIndex.end())
         {
@@ -80,20 +82,18 @@ int main()
     PokemonTypeChart typeChart;
     typeChart.loadFromCSV(TYPE_EFFECTIVENESS_PATH);
 
-    std::string attackType = "Gelo";
-    std::string defenseType = "Dragao";
+    string attackType = "Gelo";
+    string defenseType = "Dragao";
     double multiplier = typeChart.getDamageMultiplier(attackType, defenseType);
 
-    std::cout << "Um ataque de tipo " << attackType << " causa " << multiplier << "x de dano em um Pokémon de tipo " << defenseType << ".\n";
+    cout << "Um ataque de tipo " << attackType << " causa " << multiplier << "x de dano em um Pokémon de tipo " << defenseType << ".\n";
 
     // Outros exemplos de consulta
-    std::cout << "Um ataque de tipo Fogo causa " << typeChart.getDamageMultiplier("Fogo", "Grama") << "x de dano em um Pokémon de tipo Grama.\n";
-    std::cout << "Um ataque de tipo Agua causa " << typeChart.getDamageMultiplier("Agua", "Fogo") << "x de dano em um Pokémon de tipo Fogo.\n";
+    cout << "Um ataque de tipo Fogo causa " << typeChart.getDamageMultiplier("Fogo", "Grama") << "x de dano em um Pokémon de tipo Grama.\n";
+    cout << "Um ataque de tipo Agua causa " << typeChart.getDamageMultiplier("Agua", "Fogo") << "x de dano em um Pokémon de tipo Fogo.\n";
 
     return 0;
 }
-
-// using namespace std;
 
 // int main()
 // {
