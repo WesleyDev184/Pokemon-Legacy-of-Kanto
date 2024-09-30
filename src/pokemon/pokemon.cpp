@@ -1,44 +1,23 @@
 #include "pokemon.h"
 #include <iostream>
 
+using namespace std;
+
 // Construtor
 Pokemon::Pokemon(const string &name, const string &type1, const string &type2,
                  int hp, int level, int attack, int defense, int speed, int specialAttack, int specialDefense)
-{
-  this->name = new string(name);
-  this->type1 = new Type(type1);
-  this->type2 = new Type(type2);
-  this->hp = hp;
-  this->level = level;
-  this->attack = attack;
-  this->defense = defense;
-  this->speed = speed;
-  this->specialAttack = specialAttack;
-  this->specialDefense = specialDefense;
-}
-
-// Destrutor
-Pokemon::~Pokemon()
-{
-  delete name;
-  delete type1;
-  delete type2;
-
-  for (Move *move : moves)
-  {
-    delete move; // Libera a memória alocada para cada movimento
-  }
-}
+    : name(name), type1(type1), type2(type2), hp(hp), level(level), attack(attack), defense(defense),
+      speed(speed), specialAttack(specialAttack), specialDefense(specialDefense) {}
 
 // Getters
 string Pokemon::getName() const
 {
-  return *name;
+  return this->name;
 }
 
-vector<Type *> Pokemon::getTypes() const
+vector<Type> Pokemon::getTypes() const
 {
-  return {type1, type2};
+  return {this->type1, this->type2};
 }
 
 int Pokemon::getHP() const
@@ -76,49 +55,43 @@ int Pokemon::getSpecialDefense() const
   return this->specialDefense;
 }
 
-vector<Move *> Pokemon::getMoves() const
+vector<Move> Pokemon::getMoves() const
 {
   return this->moves;
 }
 
 // Setters
-void Pokemon::setMoves(const vector<Move *> &moves)
+void Pokemon::setMoves(const vector<Move> &moves)
 {
-  for (Move *move : this->moves)
-  {
-    delete move; // Libera a memória antiga dos movimentos
-  }
-  this->moves = moves; // Define os novos movimentos
+  this->moves = moves;
 }
 
-void Pokemon::setTypes(const vector<Type *> &types)
+void Pokemon::setTypes(const vector<Type> &types)
 {
-  if (types.size() >= 2)
+  for (auto &type : types)
   {
-    *this->type1 = *types[0];
-    *this->type2 = *types[1];
+    if (this->type1.getName() == type.getName())
+    {
+      this->type1 = type;
+    }
+    if (this->type2.getName() == type.getName())
+    {
+      this->type2 = type;
+    }
   }
 }
-  
-// Método print
+
 void Pokemon::print() const
 {
-  cout << "Pokemon: " << *name << ", "
-       << "Type1: " << type1->getName() << ", "
-       << "Type2: " << type2->getName() << ", "
-       << "HP: " << hp << ", "
-       << "Level: " << level << ", "
-       << "Attack: " << attack << ", "
-       << "Defense: " << defense << ", "
-       << "Speed: " << speed << ", "
-       << "Special Attack: " << specialAttack << ", "
-       << "Special Defense: " << specialDefense
+  cout << "Pokemon: " << this->name << ", "
+       << "Type1: " << this->type1.getName() << ", "
+       << "Type2: " << this->type2.getName() << ", "
+       << "HP: " << this->hp << ", "
+       << "Level: " << this->level << ", "
+       << "Attack: " << this->attack << ", "
+       << "Defense: " << this->defense << ", "
+       << "Speed: " << this->speed << ", "
+       << "Special Attack: " << this->specialAttack << ", "
+       << "Special Defense: " << this->specialDefense
        << endl;
-
-  cout << "Moves: ";
-  for (Move *move : moves)
-  {
-    cout << move->getName() << " "; // Supondo que Move tenha um método getName()
-  }
-  cout << endl;
 }

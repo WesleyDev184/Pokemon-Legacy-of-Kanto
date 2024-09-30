@@ -14,30 +14,26 @@ private:
   int score;
   int victories;
   int defeats;
-  vector<Pokemon *> pokemons; // Vetor de ponteiros para Pokémon
+  vector<Pokemon> pokemons;
 
 public:
   // Construtor
-  Player() : score(0), victories(0), defeats(0) {};
+  Player() {};
   Player(const string &name, int score, int victories, int defeats);
-
-  // Destrutor para liberar memória
-  ~Player();
 
   // Getters
   string getName() const;
   int getScore() const;
   int getVictories() const;
   int getDefeats() const;
-  vector<Pokemon *> getPokemons() const; // Retorna ponteiros
+  vector<Pokemon> getPokemons() const;
 
   // Setters
   void setScore(const int score);
   void setVictories(const int victories);
   void setDefeats(const int defeats);
-  void setPokemons(const vector<Pokemon *> &pokemons); // Define ponteiros
+  void setPokemons(const vector<Pokemon> &pokemons);
 
-  void addPokemon(Pokemon *pokemon); // Adiciona um ponteiro de Pokémon
   void print() const;
 };
 

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 #include "../player/player.h"
 #include "../pokemon/pokemon.h"
 #include "../move/move.h"
@@ -13,32 +14,30 @@ using namespace std;
 class Game
 {
 private:
-  vector<Player*> players;  // Vetor de ponteiros para Player
-  vector<Type*> types;      // Vetor de ponteiros para Type
-  vector<Pokemon*> pokemons; // Vetor de ponteiros para Pokemon
-  vector<Move*> moves;       // Vetor de ponteiros para Move
-  int difficulty = 1;        // 1 - easy, 2 - medium, 3 - hard
+  vector<shared_ptr<Player>> players; // Usando smart pointers
+  vector<shared_ptr<Type>> types;
+  vector<shared_ptr<Pokemon>> pokemons;
+  vector<shared_ptr<Move>> moves;
+  int difficulty = 1; // 1 - easy, 2 - medium, 3 - hard
 
 public:
-  Game() {};
+  Game(/* args */) {};
 
-  ~Game();  // Destrutor para liberar memória
-
-  // Lógica do jogo
-  void drawPokemons(Player* player, Player* CPU) const;
-  double calculateDamage(const Pokemon* attacker, const Pokemon* defender, const Move* move) const;
+  // game logic
+  void drawPokemons(shared_ptr<Player> &player, shared_ptr<Player> &CPU) const; // Use shared_ptr como parâmetro
+  double calculateDamage(const shared_ptr<Pokemon> &attacker, const shared_ptr<Pokemon> &defender, const shared_ptr<Move> &move) const;
 
   // Getters
-  vector<Player*> getPlayers() const;
-  vector<Type*> getTypes() const;
-  vector<Pokemon*> getPokemons() const;
-  vector<Pokemon*> getPokemonsByType(const string &type) const;
-  vector<Move*> getMoves() const;
+  vector<shared_ptr<Player>> getPlayers() const;
+  vector<shared_ptr<Type>> getTypes() const;
+  vector<shared_ptr<Pokemon>> getPokemons() const;
+  vector<shared_ptr<Pokemon>> getPokemonsByType(const string &type) const;
+  vector<shared_ptr<Move>> getMoves() const;
   int getDifficulty() const;
 
   // Setters
   void setDifficulty(const int difficulty);
-  void setNewPlayer(Player* player);
+  void setNewPlayers(const shared_ptr<Player> player); // Use shared_ptr como parâmetro
 
   // Loaders
   void loadPlayersFromFile(const string &filePath);

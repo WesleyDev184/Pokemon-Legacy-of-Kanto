@@ -9,20 +9,14 @@ using namespace std;
 class Type
 {
 private:
-  string* name;                  // Ponteiro para o nome do tipo
-  map<string, double>* multipliers;  // Ponteiro para o mapa de multiplicadores
+  string name;
+  map<string, double> multipliers;
 
 public:
-  // Construtor
   Type(const string &typeName);
 
-  // Destrutor
-  ~Type();
-
-  // Getters
   string getName() const;
 
-  // Setters
   void setMultiplier(const string &defType, double multiplier);
 
   map<string, double> getMultipliers() const;

@@ -4,44 +4,36 @@ using namespace std;
 
 int main()
 {
-    srand(static_cast<unsigned int>(time(0))); // Inicializa a semente
+    srand(static_cast<unsigned int>(time(0))); // Inicializa a semente aleatória
 
     Game game;
 
-    // Carregando dados do jogo
     game.loadPlayersFromFile(PLAYERS_PATH);
     game.loadMovesFromFile(MOVES_PATH);
     game.loadEffectivenessFromFile(TYPE_EFFECTIVENESS_PATH);
     game.loadPokemonFromFile(POKEMONS_PATH);
 
-    // Obtendo jogadores
-    auto players = game.getPlayers();
-    if (players.size() < 2)
-    {
-        cerr << "Erro: Não há jogadores suficientes." << endl;
-        return 1; // Retorna um código de erro
-    }
-
-    Player &humanPlayer = *players.at(1);
-    Player &CPUPlayer = *players.at(0);
+    // Selecionando jogadores
+    auto players = game.getPlayers().at(1);
+    auto CPU = game.getPlayers().at(0);
 
     // Desenhando Pokémon para os jogadores
-    game.drawPokemons(&humanPlayer, &CPUPlayer);
+    game.drawPokemons(players, CPU);
 
-    // Imprimindo Pokémon do jogador humano
+    // Exibindo Pokémon do jogador
     cout << endl
-         << "Jogador: " << humanPlayer.getName() << endl;
-    for (const auto &pokemon : humanPlayer.getPokemons())
+         << "Jogador: " << players->getName() << endl;
+    for (const auto &pokemon : game.getPlayers().at(1)->getPokemons())
     {
-        pokemon->print();
+        pokemon.print();
     }
 
-    // Imprimindo Pokémon do jogador CPU
+    // Exibindo Pokémon da CPU
     cout << endl
-         << "Jogador: " << CPUPlayer.getName() << endl;
-    for (const auto &pokemon : CPUPlayer.getPokemons())
+         << "CPU: " << CPU->getName() << endl;
+    for (const auto &pokemon : game.getPlayers().at(0)->getPokemons())
     {
-        pokemon->print();
+        pokemon.print();
     }
 
     return 0;
