@@ -3,11 +3,11 @@
 
 #include <iostream>
 #include <memory>
-#include "src/move/move.h"
-#include "src/pokemon/pokemon.h"
-#include "src/player/player.h"
+#include <cstdlib>
+#include <ctime>
+#include "src/game/game.h"
 
-#define MOVES_PATH "data/moves.txt"
+#define MOVES_PATH "data/ataques.txt"
 #define POKEMONS_PATH "data/pokemons.txt"
 #define PLAYERS_PATH "data/player.txt"
 #define TYPE_EFFECTIVENESS_PATH "data/effectiveness.csv"

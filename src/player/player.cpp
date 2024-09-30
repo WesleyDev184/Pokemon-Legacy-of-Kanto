@@ -1,6 +1,4 @@
 #include "Player.h"
-#include <fstream>
-#include <sstream>
 #include <iostream>
 
 using namespace std;
@@ -9,36 +7,39 @@ using namespace std;
 Player::Player(const string &name, int score, int victories, int defeats)
     : name(name), score(score), victories(victories), defeats(defeats) {}
 
+// Destrutor
+Player::~Player()
+{
+  for (Pokemon *pokemon : pokemons)
+  {
+    delete pokemon; // Libera a memória de cada Pokémon
+  }
+}
+
 // Getters
 string Player::getName() const
 {
   return this->name;
 }
+
 int Player::getScore() const
 {
   return this->score;
 }
+
 int Player::getVictories() const
 {
   return this->victories;
 }
+
 int Player::getDefeats() const
 {
   return this->defeats;
 }
 
-void Player::print() const
+vector<Pokemon *> Player::getPokemons() const
 {
-  cout << "Player: " << this->name << ", "
-       << "Score: " << this->score << ", "
-       << "Victories: " << this->victories << ", "
-       << "Defeats: " << this->defeats
-       << endl;
-}
-
-vector<Pokemon> Player::getPokemons() const
-{
-  return this->pokemons;
+  return this->pokemons; // Retorna ponteiros
 }
 
 // Setters
@@ -57,65 +58,29 @@ void Player::setDefeats(int defeats)
   this->defeats = defeats;
 }
 
-void Player::setPokemons(const vector<Pokemon> &pokemons)
+void Player::setPokemons(const vector<Pokemon *> &pokemons)
 {
-  this->pokemons = pokemons;
+  this->pokemons = pokemons; // Define ponteiros
 }
 
-void loadPlayersFromFile(const string &filePath, vector<Player> *players)
+// Adiciona um Pokémon ao vetor
+void Player::addPokemon(Pokemon *pokemon)
 {
-  ifstream file(filePath);
-
-  if (!file.is_open())
-  {
-    cerr << "Error: Could not open file " << filePath << endl;
-    return;
-  }
-
-  string line;
-  // Ignorar a primeira linha (cabeçalho)
-  getline(file, line);
-
-  while (getline(file, line))
-  {
-    stringstream ss(line);
-    string name;
-    int score, victories, defeats;
-
-    // Dividir a linha pelos campos, assumindo que eles são separados por vírgulas
-    getline(ss, name, ',');
-    ss >> score;
-    ss.ignore();
-    ss >> victories;
-    ss.ignore();
-    ss >> defeats;
-
-    // Criar o objeto Player e adicionar ao vetor
-    players->emplace_back(name, score, victories, defeats);
-  }
-
-  file.close();
+  pokemons.push_back(pokemon); // Adiciona o ponteiro ao vetor
 }
 
-void savePlayersToFile(const string &filePath, const vector<Player> &players)
+void Player::print() const
 {
-  ofstream file(filePath);
+  cout << "Player: " << this->name << ", "
+       << "Score: " << this->score << ", "
+       << "Victories: " << this->victories << ", "
+       << "Defeats: " << this->defeats
+       << endl;
 
-  if (!file.is_open())
+  cout << "Pokémons: ";
+  for (const Pokemon *pokemon : pokemons)
   {
-    cerr << "Error: Could not open file " << filePath << endl;
-    return;
+    cout << pokemon->getName() << " "; // Supondo que Pokémon tenha um método getName()
   }
-
-  file << "Name,Score,Victories,Defeats" << endl;
-
-  for (const auto &player : players)
-  {
-    file << player.getName() << ","
-         << player.getScore() << ","
-         << player.getVictories() << ","
-         << player.getDefeats() << endl;
-  }
-
-  file.close();
+  cout << endl;
 }

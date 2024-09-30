@@ -2,22 +2,24 @@
 #define MOVE_H
 
 #include <string>
-#include <vector>
 
 using namespace std;
 
 class Move
 {
 private:
-  string name;
-  string category;
+  string *name;
+  string *category;
   int power;
   float accuracy;
-  string type;
+  string *type;
 
 public:
   // Construtor
   Move(const string &name, const string &category, int power, float accuracy, const string &type);
+
+  // Destrutor
+  ~Move();
 
   // Getters
   string getName() const;
@@ -26,9 +28,12 @@ public:
   float getAccuracy() const;
   string getType() const;
 
+  // Setters (opcional, caso queira modificar depois)
+  void setName(const string &name);
+  void setCategory(const string &category);
+  void setType(const string &type);
+
   void print() const;
 };
-
-void loadMovesFromFile(const string &filePath, vector<Move> *moves);
 
 #endif

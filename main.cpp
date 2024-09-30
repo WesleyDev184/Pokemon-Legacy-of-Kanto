@@ -1,130 +1,48 @@
 #include "main.h"
-#include <iostream>
-#include <vector>
-#include <fstream>
-#include <sstream>
-#include <unordered_map>
 
 using namespace std;
 
-class PokemonTypeChart
-{
-private:
-    vector<vector<double>> typeChart;
-    unordered_map<string, int> typeIndex;
-
-    void loadTypes(const vector<string> &types)
-    {
-        for (int i = 0; i < types.size(); ++i)
-        {
-            typeIndex[types[i]] = i;
-        }
-    }
-
-public:
-    void loadFromCSV(const string &filename)
-    {
-        ifstream file(filename);
-        string line, cell;
-        bool headerProcessed = false;
-
-        if (!file.is_open())
-        {
-            cerr << "Erro ao abrir o arquivo " << filename << endl;
-            return;
-        }
-
-        while (getline(file, line))
-        {
-            stringstream lineStream(line);
-            vector<double> row;
-
-            if (!headerProcessed)
-            {
-                // Process header
-                vector<string> headers;
-                getline(lineStream, cell, ','); // Skip "attack" header
-                while (getline(lineStream, cell, ','))
-                {
-                    headers.push_back(cell);
-                }
-                loadTypes(headers);
-                headerProcessed = true;
-            }
-            else
-            {
-                // Process data rows
-                getline(lineStream, cell, ','); // Skip row type (e.g., Normal, Fogo)
-                while (getline(lineStream, cell, ','))
-                {
-                    row.push_back(stod(cell));
-                }
-                typeChart.push_back(row);
-            }
-        }
-    }
-
-    double getDamageMultiplier(const string &attackType, const string &defenseType) const
-    {
-        if (typeIndex.find(attackType) != typeIndex.end() && typeIndex.find(defenseType) != typeIndex.end())
-        {
-            int attackIdx = typeIndex.at(attackType);
-            int defenseIdx = typeIndex.at(defenseType);
-            return typeChart[attackIdx][defenseIdx];
-        }
-        cout << "Tipo de ataque ou defesa não encontrado" << endl;
-        return 1.0; // Default to neutral damage if type not found
-    }
-};
-
 int main()
 {
-    PokemonTypeChart typeChart;
-    typeChart.loadFromCSV(TYPE_EFFECTIVENESS_PATH);
+    srand(static_cast<unsigned int>(time(0))); // Inicializa a semente
 
-    string attackType = "Gelo";
-    string defenseType = "Dragao";
-    double multiplier = typeChart.getDamageMultiplier(attackType, defenseType);
+    Game game;
 
-    cout << "Um ataque de tipo " << attackType << " causa " << multiplier << "x de dano em um Pokémon de tipo " << defenseType << ".\n";
+    // Carregando dados do jogo
+    game.loadPlayersFromFile(PLAYERS_PATH);
+    game.loadMovesFromFile(MOVES_PATH);
+    game.loadEffectivenessFromFile(TYPE_EFFECTIVENESS_PATH);
+    game.loadPokemonFromFile(POKEMONS_PATH);
 
-    // Outros exemplos de consulta
-    cout << "Um ataque de tipo Fogo causa " << typeChart.getDamageMultiplier("Fogo", "Grama") << "x de dano em um Pokémon de tipo Grama.\n";
-    cout << "Um ataque de tipo Agua causa " << typeChart.getDamageMultiplier("Agua", "Fogo") << "x de dano em um Pokémon de tipo Fogo.\n";
+    // Obtendo jogadores
+    auto players = game.getPlayers();
+    if (players.size() < 2)
+    {
+        cerr << "Erro: Não há jogadores suficientes." << endl;
+        return 1; // Retorna um código de erro
+    }
+
+    Player &humanPlayer = *players.at(1);
+    Player &CPUPlayer = *players.at(0);
+
+    // Desenhando Pokémon para os jogadores
+    game.drawPokemons(&humanPlayer, &CPUPlayer);
+
+    // Imprimindo Pokémon do jogador humano
+    cout << endl
+         << "Jogador: " << humanPlayer.getName() << endl;
+    for (const auto &pokemon : humanPlayer.getPokemons())
+    {
+        pokemon->print();
+    }
+
+    // Imprimindo Pokémon do jogador CPU
+    cout << endl
+         << "Jogador: " << CPUPlayer.getName() << endl;
+    for (const auto &pokemon : CPUPlayer.getPokemons())
+    {
+        pokemon->print();
+    }
 
     return 0;
 }
-
-// int main()
-// {
-//     shared_ptr<vector<Move>> moves(new vector<Move>());
-//     shared_ptr<vector<Pokemon>> pokemons(new vector<Pokemon>());
-//     shared_ptr<vector<Player>> players(new vector<Player>());
-
-//     loadPlayersFromFile(PLAYERS_PATH, players.get());
-
-//     players->at(0).setScore(2000);
-
-//     for (const auto &player : *players)
-//     {
-//         player.print();
-//     }
-
-//     savePlayersToFile(PLAYERS_PATH, *players);
-
-//     // loadMovesFromFile(MOVES_PATH, moves.get());
-
-//     // for (const auto &move : *moves)
-//     // {
-//     //     move.print();
-//     // }
-
-//     // loadPokemonFromFile(POKEMONS_PATH, pokemons.get());
-
-//     // for (const auto &pokemon : *pokemons)
-//     // {
-//     //     pokemon.print();
-//     // }
-
-//     return 0;
-// }

@@ -1,29 +1,44 @@
 #include "pokemon.h"
-#include <fstream>
-#include <sstream>
 #include <iostream>
-
-using namespace std;
 
 // Construtor
 Pokemon::Pokemon(const string &name, const string &type1, const string &type2,
                  int hp, int level, int attack, int defense, int speed, int specialAttack, int specialDefense)
-    : name(name), type1(type1), type2(type2), hp(hp), level(level), attack(attack), defense(defense),
-      speed(speed), specialAttack(specialAttack), specialDefense(specialDefense) {}
+{
+  this->name = new string(name);
+  this->type1 = new Type(type1);
+  this->type2 = new Type(type2);
+  this->hp = hp;
+  this->level = level;
+  this->attack = attack;
+  this->defense = defense;
+  this->speed = speed;
+  this->specialAttack = specialAttack;
+  this->specialDefense = specialDefense;
+}
+
+// Destrutor
+Pokemon::~Pokemon()
+{
+  delete name;
+  delete type1;
+  delete type2;
+
+  for (Move *move : moves)
+  {
+    delete move; // Libera a memória alocada para cada movimento
+  }
+}
 
 // Getters
 string Pokemon::getName() const
 {
-  return this->name;
+  return *name;
 }
 
-string Pokemon::getType1() const
+vector<Type *> Pokemon::getTypes() const
 {
-  return this->type1;
-}
-string Pokemon::getType2() const
-{
-  return this->type2;
+  return {type1, type2};
 }
 
 int Pokemon::getHP() const
@@ -61,73 +76,49 @@ int Pokemon::getSpecialDefense() const
   return this->specialDefense;
 }
 
-vector<Move> Pokemon::getMoves() const
+vector<Move *> Pokemon::getMoves() const
 {
   return this->moves;
 }
 
 // Setters
-void Pokemon::setMoves(const vector<Move> &moves)
+void Pokemon::setMoves(const vector<Move *> &moves)
 {
-  this->moves = moves;
+  for (Move *move : this->moves)
+  {
+    delete move; // Libera a memória antiga dos movimentos
+  }
+  this->moves = moves; // Define os novos movimentos
 }
 
+void Pokemon::setTypes(const vector<Type *> &types)
+{
+  if (types.size() >= 2)
+  {
+    *this->type1 = *types[0];
+    *this->type2 = *types[1];
+  }
+}
+  
+// Método print
 void Pokemon::print() const
 {
-  cout << "Pokemon: " << this->name << ", "
-       << "Type1: " << this->type1 << ", "
-       << "Type2: " << this->type2 << ", "
-       << "HP: " << this->hp << ", "
-       << "Level: " << this->level << ", "
-       << "Attack: " << this->attack << ", "
-       << "Defense: " << this->defense << ", "
-       << "Speed: " << this->speed << ", "
-       << "Special Attack: " << this->specialAttack << ", "
-       << "Special Defense: " << this->specialDefense
+  cout << "Pokemon: " << *name << ", "
+       << "Type1: " << type1->getName() << ", "
+       << "Type2: " << type2->getName() << ", "
+       << "HP: " << hp << ", "
+       << "Level: " << level << ", "
+       << "Attack: " << attack << ", "
+       << "Defense: " << defense << ", "
+       << "Speed: " << speed << ", "
+       << "Special Attack: " << specialAttack << ", "
+       << "Special Defense: " << specialDefense
        << endl;
-}
 
-void loadPokemonFromFile(const string &filePath, vector<Pokemon> *pokemons)
-{
-  ifstream file(filePath);
-
-  if (!file.is_open())
+  cout << "Moves: ";
+  for (Move *move : moves)
   {
-    cerr << "Error: Could not open file " << filePath << endl;
-    return;
+    cout << move->getName() << " "; // Supondo que Move tenha um método getName()
   }
-
-  string line;
-  // Ignorar a primeira linha (cabeçalho)
-  getline(file, line);
-
-  while (getline(file, line))
-  {
-    stringstream ss(line);
-    string name, type1, type2;
-    int hp, level, attack, defense, speed, specialAttack, specialDefense;
-
-    // Dividir a linha pelos campos, assumindo que eles são separados por vírgulas
-    getline(ss, name, ',');
-    getline(ss, type1, ',');
-    getline(ss, type2, ',');
-    ss >> hp;
-    ss.ignore();
-    ss >> level;
-    ss.ignore();
-    ss >> attack;
-    ss.ignore();
-    ss >> defense;
-    ss.ignore();
-    ss >> speed;
-    ss.ignore();
-    ss >> specialAttack;
-    ss.ignore();
-    ss >> specialDefense;
-
-    // Criar o objeto Pokemon e adicionar ao vetor
-    pokemons->emplace_back(name, type1, type2, hp, level, attack, defense, speed, specialAttack, specialDefense);
-  }
-
-  file.close();
+  cout << endl;
 }

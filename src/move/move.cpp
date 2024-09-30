@@ -1,21 +1,33 @@
 #include "Move.h"
-#include <fstream>
-#include <sstream>
 #include <iostream>
 
 // Construtor
 Move::Move(const string &name, const string &category, int power, float accuracy, const string &type)
-    : name(name), category(category), power(power), accuracy(accuracy), type(type) {}
+{
+  this->name = new string(name);
+  this->category = new string(category);
+  this->power = power;
+  this->accuracy = accuracy;
+  this->type = new string(type);
+}
+
+// Destrutor
+Move::~Move()
+{
+  delete name;
+  delete category;
+  delete type;
+}
 
 // Getters
 string Move::getName() const
 {
-  return this->name;
+  return *name;
 }
 
 string Move::getCategory() const
 {
-  return this->category;
+  return *category;
 }
 
 int Move::getPower() const
@@ -30,52 +42,35 @@ float Move::getAccuracy() const
 
 string Move::getType() const
 {
-  return this->type;
+  return *type;
 }
 
+// Setters (opcional, caso queira modificar depois)
+void Move::setName(const string &name)
+{
+  delete this->name; // Libera a memória antiga
+  this->name = new string(name);
+}
+
+void Move::setCategory(const string &category)
+{
+  delete this->category; // Libera a memória antiga
+  this->category = new string(category);
+}
+
+void Move::setType(const string &type)
+{
+  delete this->type; // Libera a memória antiga
+  this->type = new string(type);
+}
+
+// Método print
 void Move::print() const
 {
-  cout << "Name: " << this->name << ", "
-       << "Category: " << this->category << ", "
-       << "Power: " << this->power << ", "
-       << "Accuracy: " << this->accuracy << ", "
-       << "Type: " << this->type
+  cout << "Name: " << *name << ", "
+       << "Category: " << *category << ", "
+       << "Power: " << power << ", "
+       << "Accuracy: " << accuracy << ", "
+       << "Type: " << *type
        << endl;
-}
-
-void loadMovesFromFile(const string &filePath, vector<Move> *moves)
-{
-  ifstream file(filePath);
-
-  if (!file.is_open())
-  {
-    cerr << "Error: Could not open file " << filePath << endl;
-    return;
-  }
-
-  string line;
-  // Ignorar a primeira linha (cabeçalho)
-  getline(file, line);
-
-  while (getline(file, line))
-  {
-    stringstream ss(line);
-    string name, category, type;
-    int power;
-    float accuracy;
-
-    // Dividir a linha pelos campos, assumindo que eles são separados por vírgulas
-    getline(ss, name, ',');
-    getline(ss, category, ',');
-    ss >> power;
-    ss.ignore(); // Ignorar a vírgula após o número
-    ss >> accuracy;
-    ss.ignore(); // Ignorar a vírgula após o número
-    getline(ss, type, ',');
-
-    // Criar o objeto Move e adicionar ao vetor
-    moves->emplace_back(name, category, power, accuracy, type);
-  }
-
-  file.close();
 }

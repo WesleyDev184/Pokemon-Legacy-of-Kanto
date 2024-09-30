@@ -1,4 +1,3 @@
 Name,Score,Victories,Defeats
-John Doe,2000,10,5
-Jane Smith,1800,15,3
-Jack Black,1200,7,8
+CPU,0,0,0
+Wesley,0,0,0
