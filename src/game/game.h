@@ -24,6 +24,7 @@ public:
   Game(/* args */) {};
 
   // game logic
+  void drawMoves(shared_ptr<Player> &player) const;    // Use shared_ptr como parâmetro
   void drawPokemons(shared_ptr<Player> &player) const; // Use shared_ptr como parâmetro
   double calculateDamage(const shared_ptr<Pokemon> &attacker, const shared_ptr<Pokemon> &defender, const shared_ptr<Move> &move) const;
 

@@ -2,9 +2,71 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <memory>
 
 // game logic
+void Game::drawMoves(shared_ptr<Player> &player) const
+{
+  auto moves = this->getMoves();
+  auto playerPokemons = player->getPokemons();
+
+  for (auto &pokemon : playerPokemons)
+  {
+    vector<Move> pokemonMoves;
+    vector<Move *> validTypeMoves;
+    vector<Move *> normalMoves;
+
+    // Separar movimentos válidos por tipo e movimentos "Normal"
+    for (auto &move : moves)
+    {
+      bool isValidForType = false;
+      for (const auto &type : pokemon.getTypes())
+      {
+        if (type.getName() == move->getType())
+        {
+          isValidForType = true;
+          break;
+        }
+      }
+
+      if (isValidForType)
+      {
+        validTypeMoves.push_back(move.get());
+      }
+      else if (move->getType() == "Normal")
+      {
+        normalMoves.push_back(move.get());
+      }
+    }
+
+    // Sorteia até 4 moves para o Pokémon
+    for (int i = 0; i < 4; i++)
+    {
+      if (!validTypeMoves.empty())
+      {
+        int randomIndex = rand() % validTypeMoves.size();
+        pokemonMoves.push_back(*validTypeMoves[randomIndex]);
+        validTypeMoves.erase(validTypeMoves.begin() + randomIndex);
+      }
+      else if (!normalMoves.empty())
+      {
+        int randomIndex = rand() % normalMoves.size();
+        pokemonMoves.push_back(*normalMoves[randomIndex]);
+        normalMoves.erase(normalMoves.begin() + randomIndex);
+      }
+    }
+
+    // Exibir os movimentos do Pokémon
+    for (auto &move : pokemonMoves)
+    {
+      cout << "Pokemon: " << pokemon.getName() << " - Move: " << move.getName() << " - Type: " << move.getType() << endl;
+    }
+    cout << endl;
+
+    // Atribuir movimentos ao Pokémon
+    pokemon.setMoves(pokemonMoves);
+  }
+}
+
 void Game::drawPokemons(shared_ptr<Player> &player) const
 {
   vector<shared_ptr<Pokemon>> pokemons = this->getPokemons();

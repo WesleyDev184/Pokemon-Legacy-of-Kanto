@@ -36,5 +36,10 @@ int main()
         pokemon.print();
     }
 
+    cout << endl;
+
+    // sorteando moves para os pokemons dos jogadores
+    game.drawMoves(players);
+
     return 0;
 }

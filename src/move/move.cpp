@@ -1,6 +1,4 @@
 #include "Move.h"
-#include <fstream>
-#include <sstream>
 #include <iostream>
 
 // Construtor
