@@ -5,7 +5,7 @@
 #include <memory>
 
 // game logic
-void Game::drawPokemons(shared_ptr<Player> &player, shared_ptr<Player> &CPU) const
+void Game::drawPokemons(shared_ptr<Player> &player) const
 {
   vector<shared_ptr<Pokemon>> pokemons = this->getPokemons();
   vector<Pokemon> playerPokemons;
@@ -92,7 +92,18 @@ void Game::drawPokemons(shared_ptr<Player> &player, shared_ptr<Player> &CPU) con
     }
   }
 
-    CPU->setPokemons(adversaryPokemons);
+  // busca o player CPU na lista
+  shared_ptr<Player> CPU = nullptr;
+  for (const auto &player : this->players)
+  {
+    if (player->getName() == "CPU")
+    {
+      CPU = player;
+      break;
+    }
+  }
+
+  CPU->setPokemons(adversaryPokemons);
 }
 
 double Game::calculateDamage(const shared_ptr<Pokemon> &attacker, const shared_ptr<Pokemon> &defender, const shared_ptr<Move> &move) const
