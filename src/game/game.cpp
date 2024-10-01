@@ -2,41 +2,55 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <algorithm>
 
 // game logic
+pair<vector<Move *>, vector<Move *>> filterMovesByType(const Pokemon &pokemon, const vector<shared_ptr<Move>> &moves)
+{
+  vector<Move *> validTypeMoves;
+  vector<Move *> normalMoves;
+
+  for (auto &move : moves)
+  {
+    bool isValidForType = false;
+    for (const auto &type : pokemon.getTypes())
+    {
+      if (type.getName() == move->getType())
+      {
+        isValidForType = true;
+        break;
+      }
+    }
+
+    if (isValidForType)
+    {
+      validTypeMoves.push_back(move.get());
+    }
+    else if (move->getType() == "Normal")
+    {
+      normalMoves.push_back(move.get());
+    }
+  }
+
+  return {validTypeMoves, normalMoves};
+}
+
 void Game::drawMoves(shared_ptr<Player> &player) const
 {
+  // Sorteia os pokemons e os movimentos
+  this->drawPokemons(player);
+
   auto moves = this->getMoves();
   auto playerPokemons = player->getPokemons();
 
+  // Sorteio de 4 movimentos para cada Pokémon do player
   for (auto &pokemon : playerPokemons)
   {
     vector<Move> pokemonMoves;
-    vector<Move *> validTypeMoves;
-    vector<Move *> normalMoves;
 
-    // Separar movimentos válidos por tipo e movimentos "Normal"
-    for (auto &move : moves)
-    {
-      bool isValidForType = false;
-      for (const auto &type : pokemon.getTypes())
-      {
-        if (type.getName() == move->getType())
-        {
-          isValidForType = true;
-          break;
-        }
-      }
-
-      if (isValidForType)
-      {
-        validTypeMoves.push_back(move.get());
-      }
-      else if (move->getType() == "Normal")
-      {
-        normalMoves.push_back(move.get());
-      }
-    }
+    auto movePairs = filterMovesByType(pokemon, moves);
+    vector<Move *> validTypeMoves = movePairs.first;
+    vector<Move *> normalMoves = movePairs.second;
 
     // Sorteia até 4 moves para o Pokémon
     for (int i = 0; i < 4; i++)
@@ -55,12 +69,61 @@ void Game::drawMoves(shared_ptr<Player> &player) const
       }
     }
 
-    // Exibir os movimentos do Pokémon
-    for (auto &move : pokemonMoves)
+    // Atribuir movimentos ao Pokémon
+    pokemon.setMoves(pokemonMoves);
+  }
+
+  // Buscar o player CPU na lista
+  shared_ptr<Player> CPU = nullptr;
+  for (const auto &p : this->players)
+  {
+    if (p->getName() == "CPU")
     {
-      cout << "Pokemon: " << pokemon.getName() << " - Move: " << move.getName() << " - Type: " << move.getType() << endl;
+      CPU = p;
+      break;
     }
-    cout << endl;
+  }
+
+  // Sorteio de 4 movimentos para cada Pokémon do player CPU
+  auto CPUPlayerPokemons = CPU->getPokemons();
+  for (auto &pokemon : CPUPlayerPokemons)
+  {
+    vector<Move> pokemonMoves;
+
+    auto movePairs = filterMovesByType(pokemon, moves);
+    vector<Move *> validTypeMoves = movePairs.first;
+    vector<Move *> normalMoves = movePairs.second;
+
+    // Escolha dos movimentos de acordo com a dificuldade
+    if (this->getDifficulty() == 1)
+    {
+      // Escolher sempre o ataque com menor dano
+      sort(validTypeMoves.begin(), validTypeMoves.end(), [](Move *a, Move *b)
+           { return a->getPower() < b->getPower(); });
+    }
+    else if (this->getDifficulty() == 3)
+    {
+      // Escolher sempre o ataque com maior dano
+      sort(validTypeMoves.begin(), validTypeMoves.end(), [](Move *a, Move *b)
+           { return a->getPower() > b->getPower(); });
+    }
+
+    // Sorteia até 4 moves para o Pokémon
+    for (int i = 0; i < 4; i++)
+    {
+      if (!validTypeMoves.empty())
+      {
+        int index = (this->getDifficulty() == 2) ? rand() % validTypeMoves.size() : 0; // Aleatório no Médio, primeiro no Fácil e Difícil
+        pokemonMoves.push_back(*validTypeMoves[index]);
+        validTypeMoves.erase(validTypeMoves.begin() + index);
+      }
+      else if (!normalMoves.empty())
+      {
+        int index = (this->getDifficulty() == 2) ? rand() % normalMoves.size() : 0; // Aleatório no Médio, primeiro no Fácil e Difícil
+        pokemonMoves.push_back(*normalMoves[index]);
+        normalMoves.erase(normalMoves.begin() + index);
+      }
+    }
 
     // Atribuir movimentos ao Pokémon
     pokemon.setMoves(pokemonMoves);

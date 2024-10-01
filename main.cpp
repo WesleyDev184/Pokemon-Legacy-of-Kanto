@@ -17,8 +17,7 @@ int main()
     auto players = game.getPlayers().at(1);
     auto CPU = game.getPlayers().at(0);
 
-    // Desenhando Pokémon para os jogadores
-    game.drawPokemons(players);
+    game.drawMoves(players);
 
     // Exibindo Pokémon do jogador
     cout << endl
@@ -34,12 +33,15 @@ int main()
     for (const auto &pokemon : CPU->getPokemons())
     {
         pokemon.print();
+
+        cout << "Moves: ";
+        for (const auto &move : pokemon.getMoves())
+        {
+            cout << move.getName() << " ";
+        }
     }
 
     cout << endl;
-
-    // sorteando moves para os pokemons dos jogadores
-    game.drawMoves(players);
 
     return 0;
 }
