@@ -25,6 +25,11 @@ int main()
     for (const auto &pokemon : game.getPlayers().at(1)->getPokemons())
     {
         pokemon.print();
+        cout << "Moves: ";
+        for (const auto &move : pokemon.getMoves())
+        {
+            cout << move.getName() << " ";
+        }
     }
 
     // Exibindo Pokémon da CPU
@@ -33,12 +38,6 @@ int main()
     for (const auto &pokemon : CPU->getPokemons())
     {
         pokemon.print();
-
-        cout << "Moves: ";
-        for (const auto &move : pokemon.getMoves())
-        {
-            cout << move.getName() << " ";
-        }
     }
 
     cout << endl;
