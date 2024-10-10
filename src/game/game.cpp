@@ -37,8 +37,6 @@ pair<vector<Move *>, vector<Move *>> filterMovesByType(const Pokemon &pokemon, c
 
 void Game::drawMoves(shared_ptr<Player> &player) const
 {
-  // Sorteia os pokemons e os movimentos
-  this->drawPokemons(player);
 
   auto moves = this->getMoves();
   auto &playerPokemons = player->getPokemons();
