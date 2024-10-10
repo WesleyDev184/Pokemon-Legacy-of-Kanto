@@ -55,7 +55,12 @@ int Pokemon::getSpecialDefense() const
   return this->specialDefense;
 }
 
-vector<Move> Pokemon::getMoves() const
+vector<Move> &Pokemon::getMoves()
+{
+  return this->moves;
+}
+
+const vector<Move> &Pokemon::getMoves() const
 {
   return this->moves;
 }

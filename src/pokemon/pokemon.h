@@ -39,7 +39,8 @@ public:
   int getSpeed() const;
   int getSpecialAttack() const;
   int getSpecialDefense() const;
-  vector<Move> getMoves() const;
+  vector<Move> &getMoves();
+  const vector<Move> &getMoves() const;
 
   // Setters
   void setMoves(const vector<Move> &moves);

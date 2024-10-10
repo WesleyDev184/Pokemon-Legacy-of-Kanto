@@ -41,7 +41,7 @@ void Game::drawMoves(shared_ptr<Player> &player) const
   this->drawPokemons(player);
 
   auto moves = this->getMoves();
-  auto playerPokemons = player->getPokemons();
+  auto &playerPokemons = player->getPokemons();
 
   // Sorteio de 4 movimentos para cada Pokémon do player
   for (auto &pokemon : playerPokemons)
@@ -85,7 +85,7 @@ void Game::drawMoves(shared_ptr<Player> &player) const
   }
 
   // Sorteio de 4 movimentos para cada Pokémon do player CPU
-  auto CPUPlayerPokemons = CPU->getPokemons();
+  auto &CPUPlayerPokemons = CPU->getPokemons();
   for (auto &pokemon : CPUPlayerPokemons)
   {
     vector<Move> pokemonMoves;

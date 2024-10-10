@@ -14,22 +14,24 @@ int main()
     game.loadPokemonFromFile(POKEMONS_PATH);
 
     // Selecionando jogadores
-    auto players = game.getPlayers().at(1);
+    auto player = game.getPlayers().at(1);
     auto CPU = game.getPlayers().at(0);
 
-    game.drawMoves(players);
+    game.drawMoves(player);
 
     // Exibindo Pokémon do jogador
     cout << endl
-         << "Jogador: " << players->getName() << endl;
+         << "Jogador: " << player->getName() << endl;
     for (const auto &pokemon : game.getPlayers().at(1)->getPokemons())
     {
         pokemon.print();
-        cout << "Moves: ";
-        for (const auto &move : pokemon.getMoves())
+        // Exibindo movimentos
+        for (auto &move : pokemon.getMoves())
         {
-            cout << move.getName() << " ";
+            move.print();
         }
+
+        cout << endl;
     }
 
     // Exibindo Pokémon da CPU
@@ -38,6 +40,13 @@ int main()
     for (const auto &pokemon : CPU->getPokemons())
     {
         pokemon.print();
+
+        for (auto &move : pokemon.getMoves())
+        {
+            move.print();
+        }
+
+        cout << endl;
     }
 
     cout << endl;

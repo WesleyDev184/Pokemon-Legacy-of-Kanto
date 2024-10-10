@@ -26,7 +26,8 @@ public:
   int getScore() const;
   int getVictories() const;
   int getDefeats() const;
-  vector<Pokemon> getPokemons() const;
+  vector<Pokemon> &getPokemons();
+  const vector<Pokemon> &getPokemons() const;
 
   // Setters
   void setScore(const int score);

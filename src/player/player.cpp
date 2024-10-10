@@ -34,7 +34,12 @@ void Player::print() const
        << endl;
 }
 
-vector<Pokemon> Player::getPokemons() const
+vector<Pokemon> &Player::getPokemons()
+{
+  return this->pokemons;
+}
+
+const vector<Pokemon> &Player::getPokemons() const
 {
   return this->pokemons;
 }
