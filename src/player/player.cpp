@@ -64,13 +64,3 @@ void Player::setPokemons(const vector<Pokemon> &pokemons)
 {
   this->pokemons = pokemons;
 }
-
-bool Player::operator<(const Player &player) const
-{
-  return this->score < player.getScore();
-}
-
-bool Player::operator>(const Player &player) const
-{
-  return this->score > player.getScore();
-}

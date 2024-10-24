@@ -1,4 +1,4 @@
 Name,Score,Victories,Defeats
-CPU,10,0,5
-Wesley,20,2,0
-Ash,30,3,0
+CPU,10,0,12
+Wesley,50,5,0
+Ash,70,7,0
