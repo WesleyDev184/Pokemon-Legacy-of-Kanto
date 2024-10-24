@@ -103,5 +103,5 @@ void Pokemon::print() const
        << "Speed: " << this->speed << ", "
        << "Special Attack: " << this->specialAttack << ", "
        << "Special Defense: " << this->specialDefense
-       << endl;
+       << endl << endl;
 }

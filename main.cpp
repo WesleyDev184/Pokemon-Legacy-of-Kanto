@@ -46,7 +46,7 @@ int main()
             cout << "Jogadores disponíveis:" << endl;
             for (size_t i = 1; i < game.getPlayers().size(); ++i)
             {
-                player->print();
+                game.getPlayers().at(i)->print();
             }
 
             cout << "Digite o nome do jogador: ";

@@ -39,7 +39,8 @@ void Game::battle(shared_ptr<Player> &player1, shared_ptr<Player> &player2)
 
   while (pokemon1.getHp() > 0 && pokemon2.getHp() > 0)
   {
-    cout << "Turno " << turn << endl;
+    cout << endl
+         << "Turno " << turn << endl;
     cout << "Player 1: " << player1->getName() << endl
          << "\tPokemon: " << pokemon1.getName() << " HP: " << pokemon1.getHp() << endl;
     cout << "Player 2: " << player2->getName() << endl
@@ -65,8 +66,12 @@ void Game::battle(shared_ptr<Player> &player1, shared_ptr<Player> &player2)
       // troca o pokemon do player 2
       if (indexPokemonsPlayer2 < player2Pokemons.size() - 1)
       {
+        cout << pokemon2.getName() << " foi derrotado!" << endl;
         indexPokemonsPlayer2++;
         pokemon2 = player2Pokemons[indexPokemonsPlayer2];
+        cout << "Player 2 escolheu " << pokemon2.getName() << endl;
+        turn++;
+        continue;
       }
       else
       {
@@ -91,7 +96,8 @@ void Game::battle(shared_ptr<Player> &player1, shared_ptr<Player> &player2)
     }
 
     // Player 2 ataca
-    cout << "Player 2 ataca!" << endl;
+    cout << endl
+         << pokemon2.getName() << " ataca!" << endl;
     int randomMove = rand() % pokemon2.getMoves().size();
     damage = calculateDamage(pokemon2, pokemon1, pokemon2.getMoves()[randomMove]);
     cout << "Dano causado: " << damage << endl;
@@ -138,6 +144,7 @@ void Game::battle(shared_ptr<Player> &player1, shared_ptr<Player> &player2)
         cin.ignore();
 
         pokemon1 = player1Pokemons[chosenPokemon - 1];
+        turn++;
       }
     }
   }
@@ -465,7 +472,7 @@ void Game::printRanking() const
   vector<shared_ptr<Player>> players = this->getPlayers();
 
   // Ordena os jogadores pelo score
-  sort(players.begin(), players.end(), less<shared_ptr<Player>>());
+  sort(players.begin(), players.end(), greater<shared_ptr<Player>>());
 
   cout << endl
        << "Ranking:" << endl;
