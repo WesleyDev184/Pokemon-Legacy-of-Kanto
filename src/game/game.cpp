@@ -4,7 +4,145 @@
 #include <iostream>
 #include <algorithm>
 
+using namespace std;
+
 // game logic
+void Game::battle(shared_ptr<Player> &player1, shared_ptr<Player> &player2)
+{
+  auto player1Pokemons = player1->getPokemons();
+  auto player2Pokemons = player2->getPokemons();
+
+  // pokemons em batalha
+  Pokemon &pokemon1 = player1Pokemons[0];
+  Pokemon &pokemon2 = player2Pokemons[0];
+
+  // sorteio de pokemons para batalha player 2
+  int indexPokemonsPlayer2 = 0;
+  pokemon2 = player2Pokemons[indexPokemonsPlayer2];
+
+  // Abre a lista para o jogador escolher o pokemon
+  cout << "Escolha o seu Pokémon:" << endl;
+  for (size_t i = 0; i < player1Pokemons.size(); ++i)
+  {
+    cout << i + 1 << ". ";
+    player1Pokemons[i].print();
+  }
+
+  int chosenPokemon;
+  cin >> chosenPokemon;
+  cin.ignore();
+
+  pokemon1 = player1Pokemons[chosenPokemon - 1];
+
+  // Batalha
+  int turn = 1;
+
+  while (pokemon1.getHp() > 0 && pokemon2.getHp() > 0)
+  {
+    cout << "Turno " << turn << endl;
+    cout << "Player 1: " << player1->getName() << endl
+         << "\tPokemon: " << pokemon1.getName() << " HP: " << pokemon1.getHp() << endl;
+    cout << "Player 2: " << player2->getName() << endl
+         << "\tPokemon: " << pokemon2.getName() << " HP: " << pokemon2.getHp() << endl;
+
+    // Player 1 ataca
+    cout << "Player 1, escolha o ataque:" << endl;
+    for (size_t i = 0; i < pokemon1.getMoves().size(); ++i)
+    {
+      cout << i + 1 << ". " << pokemon1.getMoves()[i].getName() << endl;
+    }
+
+    int chosenMove;
+    cin >> chosenMove;
+    cin.ignore();
+
+    double damage = calculateDamage(pokemon1, pokemon2, pokemon1.getMoves()[chosenMove - 1]);
+    cout << "Dano causado: " << damage << endl;
+    pokemon2.setHp(pokemon2.getHp() - damage);
+
+    if (pokemon2.getHp() <= 0)
+    {
+      // troca o pokemon do player 2
+      if (indexPokemonsPlayer2 < player2Pokemons.size() - 1)
+      {
+        indexPokemonsPlayer2++;
+        pokemon2 = player2Pokemons[indexPokemonsPlayer2];
+      }
+      else
+      {
+        cout << "Player 1 venceu!" << endl;
+        player1->setVictories(player1->getVictories() + 1);
+        player2->setDefeats(player2->getDefeats() + 1);
+
+        if (this->difficulty == 1)
+        {
+          player1->setScore(player1->getScore() + 10);
+        }
+        else if (this->difficulty == 2)
+        {
+          player1->setScore(player1->getScore() + 20);
+        }
+        else
+        {
+          player1->setScore(player1->getScore() + 30);
+        }
+        break;
+      }
+    }
+
+    // Player 2 ataca
+    cout << "Player 2 ataca!" << endl;
+    int randomMove = rand() % pokemon2.getMoves().size();
+    damage = calculateDamage(pokemon2, pokemon1, pokemon2.getMoves()[randomMove]);
+    cout << "Dano causado: " << damage << endl;
+    pokemon1.setHp(pokemon1.getHp() - damage);
+
+    if (pokemon1.getHp() <= 0)
+    {
+      // troca o pokemon do player 1 exbindo pokemons com hp maior que 0
+      int livingPokemons = 0;
+      for (size_t i = 0; i < player1Pokemons.size(); ++i)
+      {
+        if (player1Pokemons[i].getHp() > 0)
+        {
+          livingPokemons++;
+          cout << i + 1 << ". ";
+          player1Pokemons[i].print();
+        }
+      }
+
+      if (livingPokemons == 0)
+      {
+        cout << "Player 2 venceu!" << endl;
+        player2->setVictories(player2->getVictories() + 1);
+        player1->setDefeats(player1->getDefeats() + 1);
+
+        if (this->difficulty == 1)
+        {
+          player2->setScore(player2->getScore() + 10);
+        }
+        else if (this->difficulty == 2)
+        {
+          player2->setScore(player2->getScore() + 20);
+        }
+        else
+        {
+          player2->setScore(player2->getScore() + 30);
+        }
+        break;
+      }
+      else
+      {
+        cout << "Escolha o seu Pokémon:" << endl;
+        cin >> chosenPokemon;
+        cin.ignore();
+
+        pokemon1 = player1Pokemons[chosenPokemon - 1];
+      }
+    }
+  }
+}
+
 pair<vector<Move *>, vector<Move *>> filterMovesByType(const Pokemon &pokemon, const vector<shared_ptr<Move>> &moves)
 {
   vector<Move *> validTypeMoves;
@@ -229,15 +367,15 @@ void Game::drawPokemons(shared_ptr<Player> &player) const
   CPU->setPokemons(adversaryPokemons);
 }
 
-double Game::calculateDamage(const shared_ptr<Pokemon> &attacker, const shared_ptr<Pokemon> &defender, const shared_ptr<Move> &move) const
+double Game::calculateDamage(const Pokemon &attacker, const Pokemon &defender, const Move &move) const
 {
   double damage = 0;
-  double level = attacker->getLevel();
-  double power = move->getPower();
-  double attack = attacker->getAttack();
-  double SpecialAttack = attacker->getSpecialAttack();
-  double defense = defender->getDefense();
-  double SpecialDefense = defender->getSpecialDefense();
+  double level = attacker.getLevel();
+  double power = move.getPower();
+  double attack = attacker.getAttack();
+  double SpecialAttack = attacker.getSpecialAttack();
+  double defense = defender.getDefense();
+  double SpecialDefense = defender.getSpecialDefense();
   double critical = rand() % 16;
   double STAB = 1;
   double random = (217 + rand() % (255 - 217 + 1)) / 255.0;
@@ -245,9 +383,9 @@ double Game::calculateDamage(const shared_ptr<Pokemon> &attacker, const shared_p
 
   // valida se o ataque faz parte do moveset do pokemon
   bool validMove = false;
-  for (const auto &pokemonMove : attacker->getMoves())
+  for (const auto &pokemonMove : attacker.getMoves())
   {
-    if (pokemonMove.getName() == move->getName())
+    if (pokemonMove.getName() == move.getName())
     {
       validMove = true;
       break;
@@ -261,11 +399,11 @@ double Game::calculateDamage(const shared_ptr<Pokemon> &attacker, const shared_p
   }
 
   // calcula o dano
-  if (move->getCategory() == "Fisico")
+  if (move.getCategory() == "Fisico")
   {
     damage = (((2 * level * power) * (attack / defense)) / 50) + 2;
   }
-  else if (move->getCategory() == "Especial")
+  else if (move.getCategory() == "Especial")
   {
     damage = ((2 * level * power * (SpecialAttack / SpecialDefense)) / 50) + 2;
   }
@@ -278,8 +416,8 @@ double Game::calculateDamage(const shared_ptr<Pokemon> &attacker, const shared_p
   }
 
   // Same type attack bonus
-  auto type1 = attacker->getTypes()[0];
-  if (type1.getName() == move->getType())
+  auto type1 = attacker.getTypes()[0];
+  if (type1.getName() == move.getType())
   {
     STAB = 1.5;
   }
@@ -288,9 +426,9 @@ double Game::calculateDamage(const shared_ptr<Pokemon> &attacker, const shared_p
 
   // Type effectiveness
   double effectiveness = 1;
-  for (const auto &type : defender->getTypes())
+  for (const auto &type : defender.getTypes())
   {
-    effectiveness *= type.searchMultiplier(move->getType());
+    effectiveness *= type.searchMultiplier(move.getType());
   }
 
   if (effectiveness > 1)
@@ -313,7 +451,7 @@ double Game::calculateDamage(const shared_ptr<Pokemon> &attacker, const shared_p
 
   // accuracy
   cout << "Accuracy: " << accuracy << endl;
-  if (accuracy > move->getAccuracy())
+  if (accuracy > move.getAccuracy())
   {
     cout << "O ataque errou!" << endl;
     return 0;

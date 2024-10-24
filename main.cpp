@@ -60,6 +60,11 @@ int main()
                     break;
                 }
             }
+
+            game.drawPokemons(player);
+            game.drawMoves(player);
+            game.battle(player, CPU);
+            game.savePlayersToFile(PLAYERS_PATH);
             break;
 
         case 2:
@@ -69,6 +74,11 @@ int main()
             newPlayer = make_shared<Player>(newPlayerName, 0, 0, 0);
             game.setNewPlayers(newPlayer);
             player = newPlayer;
+
+            game.drawPokemons(player);
+            game.drawMoves(player);
+            game.battle(player, CPU);
+            game.savePlayersToFile(PLAYERS_PATH);
             break;
 
         case 3:

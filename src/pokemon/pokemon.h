@@ -32,7 +32,7 @@ public:
   string getName() const;
   vector<Type> getTypes() const;
 
-  int getHP() const;
+  int getHp() const;
   int getLevel() const;
   int getAttack() const;
   int getDefense() const;
@@ -45,6 +45,7 @@ public:
   // Setters
   void setMoves(const vector<Move> &moves);
   void setTypes(const vector<Type> &types);
+  void setHp(int hp);
 
   void print() const;
 };

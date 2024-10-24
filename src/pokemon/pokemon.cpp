@@ -20,7 +20,7 @@ vector<Type> Pokemon::getTypes() const
   return {this->type1, this->type2};
 }
 
-int Pokemon::getHP() const
+int Pokemon::getHp() const
 {
   return this->hp;
 }
@@ -84,6 +84,11 @@ void Pokemon::setTypes(const vector<Type> &types)
       this->type2 = type;
     }
   }
+}
+
+void Pokemon::setHp(int hp)
+{
+  this->hp = hp;
 }
 
 void Pokemon::print() const
