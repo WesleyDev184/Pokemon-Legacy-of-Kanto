@@ -322,6 +322,23 @@ double Game::calculateDamage(const shared_ptr<Pokemon> &attacker, const shared_p
   return damage;
 }
 
+void Game::printRanking() const
+{
+  vector<shared_ptr<Player>> players = this->getPlayers();
+
+  // Ordena os jogadores pelo score
+  sort(players.begin(), players.end(), less<shared_ptr<Player>>());
+
+  cout << endl
+       << "Ranking:" << endl;
+  for (size_t i = 0; i < players.size(); ++i)
+  {
+    cout << "Top " << i + 1 << ": " << endl;
+    cout << '\t';
+    players[i]->print();
+  }
+}
+
 // Getters
 vector<shared_ptr<Player>> Game::getPlayers() const
 {
@@ -373,6 +390,16 @@ void Game::setDifficulty(const int difficulty)
 
 void Game::setNewPlayers(const shared_ptr<Player> player)
 {
+  // valida se o player já existe
+  for (const auto &p : this->players)
+  {
+    if (p->getName() == player->getName())
+    {
+      cout << "Player já existe!" << endl;
+      return;
+    }
+  }
+
   this->players.push_back(player);
 }
 

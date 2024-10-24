@@ -35,6 +35,10 @@ public:
   void setDefeats(const int defeats);
   void setPokemons(const vector<Pokemon> &pokemons);
 
+  // Sort players by score
+  bool operator<(const Player &player) const;
+  bool operator>(const Player &player) const;
+
   void print() const;
 };
 
