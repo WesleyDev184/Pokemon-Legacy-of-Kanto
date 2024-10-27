@@ -183,10 +183,6 @@ pair<vector<Move *>, vector<Move *>> filterMovesByType(const Pokemon &pokemon, c
     {
       normalMoves.push_back(move.get());
     }
-    else
-    {
-      cout << "Invalid move for type!" << endl;
-    }
   }
 
   return {validTypeMoves, normalMoves};
@@ -205,7 +201,12 @@ void Game::drawMoves(shared_ptr<Player> &player) const
 
     auto movePairs = filterMovesByType(pokemon, moves);
     vector<Move *> validTypeMoves = movePairs.first;
+
+    cout << "Moves: " << validTypeMoves.size() << endl;
+
     vector<Move *> normalMoves = movePairs.second;
+
+    cout << "Normal Moves: " << normalMoves.size() << endl;
 
     // Sorteia até 4 moves para o Pokémon
     for (int i = 0; i < 4; i++)
