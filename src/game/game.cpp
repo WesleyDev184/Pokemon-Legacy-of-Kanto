@@ -146,6 +146,14 @@ void Game::adjustScore(shared_ptr<Player> &player)
   }
 }
 
+string normalize(const string &str)
+{
+  string result;
+  transform(str.begin(), str.end(), back_inserter(result), ::tolower);
+  result.erase(remove(result.begin(), result.end(), ' '), result.end());
+  return result;
+}
+
 pair<vector<Move *>, vector<Move *>> filterMovesByType(const Pokemon &pokemon, const vector<shared_ptr<Move>> &moves)
 {
   vector<Move *> validTypeMoves;
@@ -154,9 +162,13 @@ pair<vector<Move *>, vector<Move *>> filterMovesByType(const Pokemon &pokemon, c
   for (auto &move : moves)
   {
     bool isValidForType = false;
+    string moveType = normalize(move->getType());
+
     for (const auto &type : pokemon.getTypes())
     {
-      if (type.getName() == move->getType())
+      string pokemonType = normalize(type.getName());
+
+      if (pokemonType == moveType)
       {
         isValidForType = true;
         break;
@@ -167,9 +179,13 @@ pair<vector<Move *>, vector<Move *>> filterMovesByType(const Pokemon &pokemon, c
     {
       validTypeMoves.push_back(move.get());
     }
-    else if (move->getType() == "Normal")
+    else if (moveType == "normal")
     {
       normalMoves.push_back(move.get());
+    }
+    else
+    {
+      cout << "Invalid move for type!" << endl;
     }
   }
 
