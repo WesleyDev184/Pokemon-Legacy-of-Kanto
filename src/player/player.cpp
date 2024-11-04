@@ -1,5 +1,6 @@
 #include "player.h"
 #include <iostream>
+#include <iomanip>
 
 using namespace std;
 
@@ -27,10 +28,13 @@ int Player::getDefeats() const
 
 void Player::print() const
 {
-  cout << "Player: " << this->name << ", "
-       << "Score: " << this->score << ", "
-       << "Victories: " << this->victories << ", "
-       << "Defeats: " << this->defeats
+  cout << "==============================" << endl;
+  cout << "Player: " << this->name << endl;
+  cout << "==============================" << endl;
+  cout << left << setw(20) << "Score: " << this->score << endl;
+  cout << left << setw(20) << "Victories: " << this->victories << endl;
+  cout << left << setw(20) << "Defeats: " << this->defeats << endl;
+  cout << "==============================" << endl
        << endl;
 }
 

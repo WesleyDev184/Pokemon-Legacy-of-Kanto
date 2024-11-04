@@ -1,5 +1,6 @@
 #include "move.h"
 #include <iostream>
+#include <iomanip>
 
 // Construtor
 Move::Move(const string &name, const string &category, int power, float accuracy, const string &type)
@@ -33,10 +34,13 @@ string Move::getType() const
 
 void Move::print() const
 {
-  cout << "Name: " << this->name << ", "
-       << "Category: " << this->category << ", "
-       << "Power: " << this->power << ", "
-       << "Accuracy: " << this->accuracy << ", "
-       << "Type: " << this->type
+  cout << "==============================" << endl;
+  cout << "Move: " << this->name << endl;
+  cout << "==============================" << endl;
+  cout << left << setw(20) << "Category: " << this->category << endl;
+  cout << left << setw(20) << "Power: " << this->power << endl;
+  cout << left << setw(20) << "Accuracy: " << this->accuracy << endl;
+  cout << left << setw(20) << "Type: " << this->type << endl;
+  cout << "==============================" << endl
        << endl;
 }

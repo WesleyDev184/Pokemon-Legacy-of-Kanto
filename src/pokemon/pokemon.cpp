@@ -1,5 +1,6 @@
 #include "pokemon.h"
 #include <iostream>
+#include <iomanip>
 
 using namespace std;
 
@@ -93,15 +94,18 @@ void Pokemon::setHp(int hp)
 
 void Pokemon::print() const
 {
-  cout << "Pokemon: " << this->name << ", "
-       << "Type1: " << this->type1.getName() << ", "
-       << "Type2: " << this->type2.getName() << ", "
-       << "HP: " << this->hp << ", "
-       << "Level: " << this->level << ", "
-       << "Attack: " << this->attack << ", "
-       << "Defense: " << this->defense << ", "
-       << "Speed: " << this->speed << ", "
-       << "Special Attack: " << this->specialAttack << ", "
-       << "Special Defense: " << this->specialDefense
-       << endl << endl;
+  cout << "==============================" << endl;
+  cout << "Pokemon: " << this->name << endl;
+  cout << "==============================" << endl;
+  cout << left << setw(20) << "Type1: " << this->type1.getName() << endl;
+  cout << left << setw(20) << "Type2: " << this->type2.getName() << endl;
+  cout << left << setw(20) << "HP: " << this->hp << endl;
+  cout << left << setw(20) << "Level: " << this->level << endl;
+  cout << left << setw(20) << "Attack: " << this->attack << endl;
+  cout << left << setw(20) << "Defense: " << this->defense << endl;
+  cout << left << setw(20) << "Speed: " << this->speed << endl;
+  cout << left << setw(20) << "Special Attack: " << this->specialAttack << endl;
+  cout << left << setw(20) << "Special Defense: " << this->specialDefense << endl;
+  cout << "==============================" << endl
+       << endl;
 }

@@ -25,7 +25,7 @@ void Game::battle(shared_ptr<Player> &player1, shared_ptr<Player> &player2)
   cout << "===============================\n";
   for (size_t i = 0; i < player1Pokemons.size(); ++i)
   {
-    cout << i + 1 << ". ";
+    cout << i + 1 << ". " << endl;
     player1Pokemons[i].print();
   }
 
@@ -60,7 +60,8 @@ void Game::battle(shared_ptr<Player> &player1, shared_ptr<Player> &player2)
 
     if (action == 2)
     {
-      cout << "===============================\n";
+      cout << endl
+           << "===============================\n";
       cout << "     Escolha o seu Pokémon     \n";
       cout << "===============================\n";
       for (size_t i = 0; i < player1Pokemons.size(); ++i)
@@ -70,7 +71,7 @@ void Game::battle(shared_ptr<Player> &player1, shared_ptr<Player> &player2)
           continue;
         }
 
-        cout << i + 1 << ". ";
+        cout << i + 1 << ". " << endl;
         player1Pokemons[i].print();
       }
 
@@ -540,7 +541,6 @@ void Game::printRanking() const
   for (size_t i = 0; i < players.size(); ++i)
   {
     cout << "Top " << i + 1 << ": " << endl;
-    cout << '\t';
     players[i]->print();
   }
 }

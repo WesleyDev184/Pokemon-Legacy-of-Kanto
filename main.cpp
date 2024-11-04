@@ -2,15 +2,37 @@
 
 using namespace std;
 
+void printLine(char ch, int length)
+{
+    for (int i = 0; i < length; ++i)
+    {
+        cout << ch;
+    }
+    cout << endl;
+}
+
 void mainMenu()
 {
     cout << endl;
+    printLine('=', 30);
     cout << "Menu:" << endl;
-    cout << "1 - Selecionar jogador" << endl;
-    cout << "2 - Criar jogador" << endl;
-    cout << "3 - Alterar dificuldade" << endl;
-    cout << "4 - Exibir Rancking" << endl;
-    cout << "5 - Sair" << endl;
+    printLine('-', 30);
+    cout << "1 - Iniciar Batalha" << endl;
+    cout << "2 - Alterar dificuldade" << endl;
+    cout << "3 - Exibir Rancking" << endl;
+    cout << "4 - Sair" << endl;
+    printLine('=', 30);
+}
+
+void playerChoiceMenu()
+{
+    cout << endl;
+    printLine('=', 30);
+    cout << "Escolha de jogador:" << endl;
+    printLine('-', 30);
+    cout << "1 - Escolher jogador existente" << endl;
+    cout << "2 - Cadastrar novo jogador" << endl;
+    printLine('=', 30);
 }
 
 int main()
@@ -43,61 +65,73 @@ int main()
         switch (option)
         {
         case 1:
-            cout << "Jogadores disponíveis:" << endl;
-            for (size_t i = 1; i < game.getPlayers().size(); ++i)
-            {
-                game.getPlayers().at(i)->print();
-            }
+            playerChoiceMenu();
+            cin >> option;
+            cin.ignore();
 
-            cout << "Digite o nome do jogador: ";
-            getline(cin, playerName);
-
-            for (size_t i = 1; i < game.getPlayers().size(); ++i)
+            if (option == 1)
             {
-                if (game.getPlayers().at(i)->getName() == playerName)
+                cout << endl;
+                cout << "Jogadores disponíveis:" << endl;
+                for (size_t i = 1; i < game.getPlayers().size(); ++i)
                 {
-                    player = game.getPlayers().at(i);
-                    break;
+                    game.getPlayers().at(i)->print();
                 }
-            }
 
-            game.drawPokemons(player);
-            game.drawMoves(player);
-            game.battle(player, CPU);
-            game.savePlayersToFile(PLAYERS_PATH);
-            break;
+                cout << "Digite o nome do jogador: ";
+                getline(cin, playerName);
+
+                for (size_t i = 1; i < game.getPlayers().size(); ++i)
+                {
+                    if (game.getPlayers().at(i)->getName() == playerName)
+                    {
+                        player = game.getPlayers().at(i);
+                        break;
+                    }
+                }
+
+                game.drawPokemons(player);
+                game.drawMoves(player);
+                game.battle(player, CPU);
+                game.savePlayersToFile(PLAYERS_PATH);
+                break;
+            }
+            else
+            {
+                cout << "\nDigite o nome do jogador: ";
+                getline(cin, newPlayerName);
+
+                newPlayer = make_shared<Player>(newPlayerName, 0, 0, 0);
+                game.setNewPlayers(newPlayer);
+                player = newPlayer;
+
+                game.drawPokemons(player);
+                game.drawMoves(player);
+                game.battle(player, CPU);
+                game.savePlayersToFile(PLAYERS_PATH);
+                break;
+            }
 
         case 2:
-            cout << "Digite o nome do jogador: ";
-            getline(cin, newPlayerName);
-
-            newPlayer = make_shared<Player>(newPlayerName, 0, 0, 0);
-            game.setNewPlayers(newPlayer);
-            player = newPlayer;
-
-            game.drawPokemons(player);
-            game.drawMoves(player);
-            game.battle(player, CPU);
-            game.savePlayersToFile(PLAYERS_PATH);
-            break;
-
-        case 3:
-            cout << "Digite a dificuldade (1 - fácil, 2 - médio, 3 - difícil): ";
+            cout << endl;
+            printLine('=', 30);
+            cout << "Digite a dificuldade (1 - fácil, 2 - médio, 3 - difícil): \n";
+            printLine('=', 30);
             cin >> difficulty;
             game.setDifficulty(difficulty);
             break;
 
-        case 4:
+        case 3:
             game.printRanking();
             break;
 
-        case 5:
+        case 4:
             game.savePlayersToFile(PLAYERS_PATH);
             return 0;
 
         default:
             cout << "Opção inválida!" << endl;
-            break;
+            return 1;
         }
     }
 
