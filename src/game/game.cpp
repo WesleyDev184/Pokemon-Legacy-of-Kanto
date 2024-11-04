@@ -37,6 +37,7 @@ void Game::battle(shared_ptr<Player> &player1, shared_ptr<Player> &player2)
 
   // Batalha
   int turn = 1;
+  double damage = 0;
 
   while (pokemon1.getHp() > 0 && pokemon2.getHp() > 0)
   {
@@ -49,40 +50,78 @@ void Game::battle(shared_ptr<Player> &player1, shared_ptr<Player> &player2)
     cout << "    Pokémon: " << pokemon2.getName() << " | HP: " << pokemon2.getHp() << "\n";
     cout << "-------------------------------\n";
 
-    // Player 1 ataca
-    cout << "Player 1, escolha o ataque:\n";
-    for (size_t i = 0; i < pokemon1.getMoves().size(); ++i)
-    {
-      cout << i + 1 << ". " << pokemon1.getMoves()[i].getName() << "\n";
-    }
-
-    int chosenMove;
-    cin >> chosenMove;
+    // opçãao de ataca ou trocar de pokemon
+    cout << "Escolha a ação:\n";
+    cout << "1. Atacar\n";
+    cout << "2. Trocar de Pokémon\n";
+    int action;
+    cin >> action;
     cin.ignore();
 
-    double damage = calculateDamage(pokemon1, pokemon2, pokemon1.getMoves()[chosenMove - 1]);
-    cout << "\n>> Dano causado por " << pokemon1.getName() << ": " << damage << "!\n";
-    pokemon2.setHp(pokemon2.getHp() - damage);
-    turn++;
-
-    if (pokemon2.getHp() <= 0)
+    if (action == 2)
     {
-      cout << "\n>> " << pokemon2.getName() << " foi derrotado!!\n";
+      cout << "===============================\n";
+      cout << "     Escolha o seu Pokémon     \n";
+      cout << "===============================\n";
+      for (size_t i = 0; i < player1Pokemons.size(); ++i)
+      {
+        if (player1Pokemons[i].getHp() <= 0 || i == static_cast<size_t>(chosenPokemon - 1))
+        {
+          continue;
+        }
 
-      if (indexPokemonsPlayer2 < static_cast<int>(player2Pokemons.size()) - 1)
-      {
-        indexPokemonsPlayer2++;
-        pokemon2 = player2Pokemons[indexPokemonsPlayer2];
-        cout << ">> Player 2 escolheu " << pokemon2.getName() << "!\n";
-        continue;
+        cout << i + 1 << ". ";
+        player1Pokemons[i].print();
       }
-      else
+
+      cout << "Escolha o seu próximo Pokémon:\n";
+      cin >> chosenPokemon;
+      cin.ignore();
+
+      pokemon1 = player1Pokemons[chosenPokemon - 1];
+      cout << "\n"
+           << pokemon1.getName() << " entrou na batalha!\n";
+      turn++;
+      continue;
+    }
+    else
+    {
+      // Player 1 ataca
+      cout << "Player 1, escolha o ataque:\n";
+      for (size_t i = 0; i < pokemon1.getMoves().size(); ++i)
       {
-        cout << "\n*** Player 1 venceu a batalha! ***\n";
-        player1->setVictories(player1->getVictories() + 1);
-        player2->setDefeats(player2->getDefeats() + 1);
-        adjustScore(player1);
-        break;
+        cout << i + 1 << ". " << pokemon1.getMoves()[i].getName() << "\n";
+      }
+
+      int chosenMove;
+      cin >> chosenMove;
+      cin.ignore();
+
+      damage = calculateDamage(pokemon1, pokemon2, pokemon1.getMoves()[chosenMove - 1]);
+      cout << "\n>> Dano causado por " << pokemon1.getName() << ": " << damage << "!\n";
+      pokemon2.setHp(pokemon2.getHp() - damage);
+      damage = 0;
+      turn++;
+
+      if (pokemon2.getHp() <= 0)
+      {
+        cout << "\n>> " << pokemon2.getName() << " foi derrotado!!\n";
+
+        if (indexPokemonsPlayer2 < static_cast<int>(player2Pokemons.size()) - 1)
+        {
+          indexPokemonsPlayer2++;
+          pokemon2 = player2Pokemons[indexPokemonsPlayer2];
+          cout << ">> Player 2 escolheu " << pokemon2.getName() << "!\n";
+          continue;
+        }
+        else
+        {
+          cout << "\n*** Player 1 venceu a batalha! ***\n";
+          player1->setVictories(player1->getVictories() + 1);
+          player2->setDefeats(player2->getDefeats() + 1);
+          adjustScore(player1);
+          break;
+        }
       }
     }
 
@@ -93,6 +132,7 @@ void Game::battle(shared_ptr<Player> &player1, shared_ptr<Player> &player2)
     damage = calculateDamage(pokemon2, pokemon1, pokemon2.getMoves()[randomMove]);
     cout << "\n>> Dano causado por " << pokemon2.getName() << ": " << damage << "!\n";
     pokemon1.setHp(pokemon1.getHp() - damage);
+    damage = 0;
 
     if (pokemon1.getHp() <= 0)
     {
