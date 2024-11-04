@@ -67,15 +67,14 @@ void Game::battle(shared_ptr<Player> &player1, shared_ptr<Player> &player2)
 
     if (pokemon2.getHp() <= 0)
     {
-      cout << "\n>> " << pokemon2.getName() << " foi derrotado!\n";
+      cout << "\n>> " << pokemon2.getName() << " foi derrotado!!\n";
 
-      if (indexPokemonsPlayer2 < player2Pokemons.size() - 1)
+      if (indexPokemonsPlayer2 < static_cast<int>(player2Pokemons.size()) - 1)
       {
         indexPokemonsPlayer2++;
         pokemon2 = player2Pokemons[indexPokemonsPlayer2];
         cout << ">> Player 2 escolheu " << pokemon2.getName() << "!\n";
         continue;
-      }
       else
       {
         cout << "\n*** Player 1 venceu a batalha! ***\n";
