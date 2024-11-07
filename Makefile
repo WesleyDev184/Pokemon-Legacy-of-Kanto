@@ -8,7 +8,7 @@ OUTPUT_FOLDER = build
 CXX = g++
 
 # Flags de compilação
-CXXFLAGS = -Wall -std=c++11
+CXXFLAGS = -Wall -std=c++11 -g
 
 # Encontra todos os arquivos .cpp recursivamente, exceto main.cpp
 SRC := $(shell find -type f -name '*.cpp')

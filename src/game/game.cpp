@@ -12,8 +12,8 @@ void Game::battle(shared_ptr<Player> &player1, shared_ptr<Player> &player2)
   auto player1Pokemons = player1->getPokemons();
   auto player2Pokemons = player2->getPokemons();
 
-  Pokemon &pokemon1 = player1Pokemons[0];
-  Pokemon &pokemon2 = player2Pokemons[0];
+  Pokemon pokemon1 = player1Pokemons[0];
+  Pokemon pokemon2 = player2Pokemons[0];
 
   // Sorteio de pokemons para batalha player 2
   int indexPokemonsPlayer2 = 0;
@@ -60,6 +60,22 @@ void Game::battle(shared_ptr<Player> &player1, shared_ptr<Player> &player2)
 
     if (action == 2)
     {
+      // valida se ainda tem pokemons vivos
+      bool hasAlivePokemons = false;
+      for (const auto &p : player1Pokemons)
+      {
+        if (p.getHp() > 0)
+        {
+          hasAlivePokemons = true;
+          break;
+        }
+      }
+
+      if (!hasAlivePokemons)
+      {
+       continue;
+      }
+
       cout << endl
            << "===============================\n";
       cout << "     Escolha o seu Pokémon     \n";
@@ -101,7 +117,6 @@ void Game::battle(shared_ptr<Player> &player1, shared_ptr<Player> &player2)
       damage = calculateDamage(pokemon1, pokemon2, pokemon1.getMoves()[chosenMove - 1]);
       cout << "\n>> Dano causado por " << pokemon1.getName() << ": " << damage << "!\n";
       pokemon2.setHp(pokemon2.getHp() - damage);
-      damage = 0;
       turn++;
 
       if (pokemon2.getHp() <= 0)
@@ -133,25 +148,27 @@ void Game::battle(shared_ptr<Player> &player1, shared_ptr<Player> &player2)
     damage = calculateDamage(pokemon2, pokemon1, pokemon2.getMoves()[randomMove]);
     cout << "\n>> Dano causado por " << pokemon2.getName() << ": " << damage << "!\n";
     pokemon1.setHp(pokemon1.getHp() - damage);
-    damage = 0;
+    turn++;
 
     if (pokemon1.getHp() <= 0)
     {
       cout << "\n>> " << pokemon1.getName() << " foi derrotado!\n";
 
-      int livingPokemons = 0;
       cout << endl;
+      vector<Pokemon> livingPokemons;
       for (size_t i = 0; i < player1Pokemons.size(); ++i)
       {
-        if (player1Pokemons[i].getHp() > 0)
+        if (pokemon1.getName() != player1Pokemons[i].getName() && player1Pokemons[i].getHp() > 0)
         {
-          livingPokemons++;
-          cout << i + 1 << ". ";
-          player1Pokemons[i].print();
+          livingPokemons.push_back(player1Pokemons[i]);
+        }
+        else
+        {
+          player1Pokemons[i].setHp(0);
         }
       }
 
-      if (livingPokemons == 0)
+      if (livingPokemons.size() == 0)
       {
         cout << "\n*** Player 2 venceu a batalha! ***\n";
         player2->setVictories(player2->getVictories() + 1);
@@ -161,11 +178,17 @@ void Game::battle(shared_ptr<Player> &player1, shared_ptr<Player> &player2)
       }
       else
       {
+        for (size_t i = 0; i < livingPokemons.size(); ++i)
+        {
+          cout << i + 1 << ". " << endl;
+          livingPokemons[i].print();
+        }
+
         cout << "\nEscolha o seu próximo Pokémon:\n";
         cin >> chosenPokemon;
         cin.ignore();
 
-        pokemon1 = player1Pokemons[chosenPokemon - 1];
+        pokemon1 = livingPokemons[chosenPokemon - 1];
       }
     }
   }
@@ -231,7 +254,6 @@ pair<vector<Move *>, vector<Move *>> filterMovesByType(const Pokemon &pokemon, c
 
 void Game::drawMoves(shared_ptr<Player> &player) const
 {
-
   auto moves = this->getMoves();
   auto &playerPokemons = player->getPokemons();
 
@@ -703,6 +725,7 @@ void Game::loadMovesFromFile(const string &filePath)
     ss >> accuracy;
     ss.ignore();
     getline(ss, type, ',');
+    type.pop_back(); // Remove o \r do final da string
 
     // Criar o objeto Move usando shared_ptr e adicionar ao vetor
     shared_ptr<Move> newMove = make_shared<Move>(name, category, power, accuracy, type);
