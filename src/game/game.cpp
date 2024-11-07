@@ -99,7 +99,6 @@ void Game::battle(shared_ptr<Player> &player1, shared_ptr<Player> &player2)
       cout << "\n"
            << pokemon1.getName() << " entrou na batalha!\n";
       turn++;
-      continue;
     }
     else
     {
